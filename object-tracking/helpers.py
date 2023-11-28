@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from sort import Sort
 
 objects = {
             0: 'person', 1: 'bicycle', 2: 'car', 3: 'motorcycle', 4: 'airplane', 5: 'bus', 6: 'train', 7: 'truck', 8: 'boat',
@@ -15,6 +16,19 @@ objects = {
         }
 
 object_sortkey = ['bottle','cup','mouse','cell phone','book','scissors']
+
+sort1 = Sort()
+sort2 = Sort()
+sort3 = Sort()
+sort4 = Sort()
+sort5 = Sort()
+sort6 = Sort()
+
+sorter = [sort1,sort2,sort3,sort4,sort5,sort6]
+
+
+
+
 
 def convert_to_df(results)->pd.DataFrame:
     """
@@ -35,16 +49,19 @@ def convert_to_df(results)->pd.DataFrame:
     box_name = []
     for id in obj_ids:
         box_name.append(objects[id])
-    box_name = sorted(box_name, key = lambda x: object_sortkey.index(x))
+    # box_name = sorted(box_name, key = lambda x: object_sortkey.index(x))
     
-    print(type(box_name))
-    print(type(box_xyxy))
-    print(type(box_conf))
+    sort_order = object_sortkey
+
     df = pd.DataFrame({
         'name': box_name,
         'bbox':box_xyxy.tolist(),
         'conf':box_conf.tolist()
         })
+    
+    df['name'] = pd.Categorical(df['name'], categories=sort_order, ordered=True)
+    df = df.sort_values(by='name')
+    df = df.reset_index(drop=True)
     df_filtered  = df[df['conf'] > 0.5]
     return df_filtered
 
