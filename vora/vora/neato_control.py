@@ -184,12 +184,20 @@ class neato_control(Node):
 
     def go_towards_cup(self):
         msg, image_with_bboxes = retrieve(self.image, "cup")
-        self.cmd_vel.publish(msg)
+        if msg:
+            self.cmd_vel.publish(msg)
+        else:
+            print("STOP")
+            self.setState(self.states["home"])
         cv.imshow('video_window', image_with_bboxes) # type: ignore
         cv.waitKey(1)
 
     def go_towards_bottle(self):
         msg, image_with_bboxes = retrieve(self.image, "bottle")
+        if msg:
+            self.cmd_vel.publish(msg)
+        else:
+            self.setState(self.states["home"])
         self.cmd_vel.publish(msg)
         cv.imshow('video_window', image_with_bboxes) # type: ignore
         cv.waitKey(1)
