@@ -22,9 +22,13 @@ def retrieve(image, obj_name):
 
     xy = find_obj(obj_name,track_all)
     if xy:
+
+        if stop(obj_name,track_all):
+            return None, image
+
         cv.circle(image,xy,5,(255,0,0),-1) # type: ignore
         x_norm = xy[0]/767 - 0.5
-        thresh = 0.10
+        thresh = 0.10          
         if x_norm >= -thresh and x_norm <= thresh:
             msg.linear.x = 0.05
         elif x_norm < -thresh:
@@ -38,3 +42,12 @@ def retrieve(image, obj_name):
         msg.angular.x = 0.0
 
     return msg, image
+
+def stop(name,tracks):
+    bbox = tracks[name][0]
+    print(bbox[3])
+    y_bottom_corner = bbox[3]
+    if y_bottom_corner > 428:
+        return True
+    else:
+        return False
