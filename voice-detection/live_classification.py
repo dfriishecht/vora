@@ -10,11 +10,11 @@ FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 16000
 
-label_names = ["nanay", "tatay", "mo"]
+label_names = ["dexter", "dokyun", "dominic", "mo"]
 
 seconds = 5
 
-model_name = "classifier.p"
+model_name = "./voice-detection/test_classifier.p"
 model_dict = pickle.load(open(model_name, "rb"))
 model = model_dict["model"]
 
@@ -64,7 +64,7 @@ obj.writeframes(b"".join(frames))
 obj.close()
 
 audio = preprocess("live_audio.wav")
-audio = tf.expand_dims(audio, axis=0)
+audio = tf.expand_dims(audio[0], axis=0)
 
 prediction = list(model.predict(audio)[0])
 max_idx = prediction.index(max(prediction))
